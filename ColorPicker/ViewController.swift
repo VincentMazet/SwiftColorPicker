@@ -8,18 +8,36 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, ColorPickerDelegate {
 
+    @IBOutlet var firstView: UIView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
-
-
+    
+    internal func userDidChooseColor(color: UIColor){
+        let oldColor : UIColor = firstView.backgroundColor!
+        self.firstView.backgroundColor = color
+        dismiss(animated: true, completion: nil)
+       
+        let alert = UIAlertController(title: "Information", message: "Voulez vous garder cette couleur de fond?", preferredStyle: UIAlertControllerStyle.alert)
+        
+        alert.addAction(UIAlertAction(title: "Oui", style: UIAlertActionStyle.default, handler: nil))
+        alert.addAction(UIAlertAction(title: "Non", style: UIAlertActionStyle.cancel, handler:{ action in self.firstView.backgroundColor = oldColor}))
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "PickColor" {
+            let destination = segue.destination as! ColorPickerViewController
+            destination.delegate = self
+        }
+    }
 }
 
